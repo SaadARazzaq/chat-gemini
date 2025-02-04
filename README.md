@@ -50,10 +50,6 @@ Follow these instructions to set up and run this project on your local machine.
 
 1. **Clone the Repository:**
 
-   ```bash
-   git clone https://github.com/your-username/gemini-pdf-chatbot.git
-   ```
-
 2. **Install Dependencies:**
 
    ```bash
