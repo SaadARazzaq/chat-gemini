@@ -87,8 +87,8 @@ def user_input(user_question):
 
 def main():
     st.set_page_config(
-        page_title="Gemini PDF Chatbot",
-        page_icon="🤖"
+        page_title="RFP Analyzer",
+        page_icon="📄"
     )
 
     # Sidebar for uploading PDF files
