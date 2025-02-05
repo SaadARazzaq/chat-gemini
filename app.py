@@ -123,7 +123,7 @@ def main():
                 get_vector_store(text_chunks)
                 st.success("Processing Complete")
 
-    st.title("Chat with PDFs & Word Files using Gemini🤖")
+    st.title("RFP Analyzer")
     st.write("Welcome to the chat!")
     st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 
