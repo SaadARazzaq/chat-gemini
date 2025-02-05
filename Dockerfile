@@ -1,15 +1,14 @@
-# syntax=docker/dockerfile:1
-
+# Use a slim Python image as the base
 ARG PYTHON_VERSION=3.10.0
 FROM python:${PYTHON_VERSION}-slim as base
 
-# Prevents Python from writing pyc files.
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install LibreOffice and required dependencies
+# Install LibreOffice and dependencies
 RUN apt-get update && apt-get install -y \
     libreoffice \
     libreoffice-common \
@@ -18,6 +17,9 @@ RUN apt-get update && apt-get install -y \
     libreoffice-base \
     fonts-dejavu \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Verify that soffice exists
+RUN which soffice || ls /usr/bin/soffice || exit 1
 
 # Create a non-privileged user
 ARG UID=10001
@@ -30,7 +32,7 @@ RUN adduser \
     --uid "${UID}" \
     appuser
 
-# Change ownership of the /app directory to appuser    
+# Change ownership of the /app directory    
 RUN chown appuser:appuser /app            
 
 # Install dependencies
