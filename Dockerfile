@@ -1,25 +1,19 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
 ARG PYTHON_VERSION=3.10.0
 FROM python:${PYTHON_VERSION}-slim as base
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
-
-# Keeps Python from buffering stdout and stderr to avoid situations where
-# the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Create a non-privileged user that the app will run under.
-# See https://docs.docker.com/go/dockerfile-user-best-practices/
+# Install LibreOffice (soffice) and dependencies
+RUN apt-get update && apt-get install -y libreoffice libreoffice-common && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Create a non-privileged user
 ARG UID=10001
 RUN adduser \
     --disabled-password \
@@ -30,27 +24,22 @@ RUN adduser \
     --uid "${UID}" \
     appuser
 
-# Change the ownership of the /app directory to appuser    
+# Change ownership of the /app directory to appuser    
 RUN chown appuser:appuser /app            
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
-# Leverage a bind mount to requirements.txt to avoid having to copy them into
-# into this layer.
+# Install dependencies
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
     python -m pip install -r requirements.txt
 
-# Switch to the non-privileged user to run the application.
+# Switch to the non-privileged user
 USER appuser
 
-# Copy the source code into the container.
+# Copy source code
 COPY . .
 
-# Expose the port that the application listens on.
+# Expose Streamlit port
 EXPOSE 8501
 
-
-
-# Run the application.
+# Run Streamlit application
 CMD streamlit run app.py
