@@ -9,9 +9,15 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install LibreOffice (soffice) and dependencies
-RUN apt-get update && apt-get install -y libreoffice libreoffice-common && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install LibreOffice and required dependencies
+RUN apt-get update && apt-get install -y \
+    libreoffice \
+    libreoffice-common \
+    libreoffice-writer \
+    libreoffice-core \
+    libreoffice-base \
+    fonts-dejavu \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Create a non-privileged user
 ARG UID=10001
